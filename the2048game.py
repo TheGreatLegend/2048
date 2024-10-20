@@ -128,7 +128,7 @@ class Block:
                 grid[self.pos-1] = self
                 matrix[self.pos-1] = self.power
                 self.pos -= 1
-                self.merge("Left")
+                self.merge("Left", mixed)
                 movement = True
             elif cell.power == self.power and not mixed:
                 grid[self.pos] = None
@@ -150,7 +150,7 @@ class Block:
                 grid[self.pos+1] = self
                 matrix[self.pos+1] = self.power
                 self.pos += 1
-                self.merge("Right")
+                self.merge("Right", mixed)
                 movement = True
             elif cell.power == self.power and not mixed:
                 grid[self.pos] = None
@@ -172,7 +172,7 @@ class Block:
                 grid[self.pos-4] = self
                 matrix[self.pos-4] = self.power
                 self.pos -= 4
-                self.merge("Up")
+                self.merge("Up", mixed)
                 movement = True
             elif cell.power == self.power and not mixed:
                 grid[self.pos] = None
@@ -194,7 +194,7 @@ class Block:
                 grid[self.pos+4] = self
                 matrix[self.pos+4] = self.power
                 self.pos += 4
-                self.merge("Down")
+                self.merge("Down", mixed)
                 movement = True
             elif cell.power == self.power and not mixed:
                 grid[self.pos] = None
