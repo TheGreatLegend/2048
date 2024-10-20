@@ -32,7 +32,6 @@ css.configure("Empty.TLabel", background="#bdac97")
 css.configure("Block.TLabel", font=("Consolas", 28, "bold"))
 
 #Globals
-speed = 0.05
 scoreVar = IntVar(value=0)
 highVar = IntVar(value=cursor.execute(f'''SELECT MAX(Score) FROM Scores''').fetchone()[0])
 colors = [None, "#eee4da", "#ebd8b6", "#f2b177", "#f69462", "#f78064", "#f76543", "#f1d26d", "#f2d366", "#edc651", "#eec744", "#ecc230", "#fe3d3e", "#000000"]
@@ -124,10 +123,18 @@ class Block:
         grid[self.pos] = self
         matrix[self.pos] = self.power
 
-    def slide(self, newPos: int) -> None:
-        self.x = ((newPos%4)*0.25)+0.125
-        self.y = ((newPos//4)*0.25)+0.125
+    def slide(self, newPos: int, speedX: float= None, speedY: float= None) -> None:
+        newX = ((newPos%4)*0.25)+0.125
+        newY = ((newPos//4)*0.25)+0.125
+        if speedX == None and speedY == None:
+            speedX = abs(newX-self.x)/2
+            speedY = abs(newY-self.y)/2
+        if self.x > newX: self.x -= speedX
+        elif self.x < newX: self.x += speedX
+        if self.y > newY: self.y -= speedY
+        elif self.y < newY: self.y += speedY
         self.block.place(relx=self.x, rely=self.y, anchor="center")
+        if not(self.x == newX and self.y == newY): root.after(1, self.slide(newPos, speedX, speedY))
                     
     def merge(self, direction: str, mixed: bool= False) -> None:
         global movement
