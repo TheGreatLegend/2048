@@ -2,6 +2,17 @@
 from tkinter import Tk, mainloop, IntVar, messagebox, PhotoImage
 from tkinter.ttk import *
 from random import randint
+from sqlite3 import connect
+from os import path, makedirs
+
+#Folder Creation
+DIRECTORY = r"C:\Users\Public\AppData\2048"
+if not path.exists(DIRECTORY): makedirs(DIRECTORY)
+
+#DB Connection
+conn = connect(f"{DIRECTORY}\\2048.db")
+cursor = conn.cursor()
+cursor.execute("CREATE TABLE IF NOT EXISTS Scores (Time TEXT, Score INTEGER)")
 
 #Window Setup
 root = Tk()
@@ -18,12 +29,12 @@ css.configure("Score.TLabel", foreground="#9c8b7c", font=("Consolas", 18, "bold"
 css.configure("High.TLabel", foreground="#ffd700", font=("Consolas", 18, "bold"), background="#faf8f0")
 css.configure("HeadButton.TButton", foreground="#9c8b7c", font=("Consolas", 14, "bold"), background="#faf8f0", width=2, bordercolor="#9c8b7c")
 css.configure("Empty.TLabel", background="#bdac97")
-css.configure("Block.TLabel", font=("Helvetica", 28, "bold"))
-8
+css.configure("Block.TLabel", font=("Consolas", 28, "bold"))
+
 #Globals
 speed = 0.05
 scoreVar = IntVar(value=0)
-highVar = IntVar(value=0)
+highVar = IntVar(value=cursor.execute(f'''SELECT MAX(Score) FROM Scores''').fetchone()[0])
 colors = [None, "#eee4da", "#ebd8b6", "#f2b177", "#f69462", "#f78064", "#f76543", "#f1d26d", "#f2d366", "#edc651", "#eec744", "#ecc230", "#fe3d3e", "#000000"]
 
 #Functions
@@ -42,7 +53,9 @@ def restart():
         if cell: cell.destroy()
     startButton["state"] = "enabled"
     restartButton["state"] = "disabled"
-    highVar.set(max(highVar.get(), scoreVar.get()))
+    cursor.execute(f"INSERT INTO Scores VALUES (DATETIME('now'), {scoreVar.get()})") 
+    conn.commit()
+    highVar.set(cursor.execute(f'''SELECT MAX(Score) FROM Scores''').fetchone()[0])
     scoreVar.set(0)
 def increaseScore(increament):
     scoreVar.set(scoreVar.get()+increament)
@@ -257,3 +270,6 @@ root.bind("<Up>", lambda _: keyPress("Up"))
 
 #Mainloop
 mainloop()
+
+#Connection closed
+conn.close
