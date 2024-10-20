@@ -15,6 +15,7 @@ css = Style(root)
 css.configure("Game.TFrame", background="#9c8b7c")
 css.configure("Head.TFrame", background="#faf8f0")
 css.configure("Score.TLabel", foreground="#9c8b7c", font=("Consolas", 18, "bold"), background="#faf8f0")
+css.configure("High.TLabel", foreground="#ffd700", font=("Consolas", 18, "bold"), background="#faf8f0")
 css.configure("HeadButton.TButton", foreground="#9c8b7c", font=("Consolas", 14, "bold"), background="#faf8f0", width=2, bordercolor="#9c8b7c")
 css.configure("Empty.TLabel", background="#bdac97")
 css.configure("Block.TLabel", font=("Helvetica", 30, "bold"))
@@ -22,6 +23,7 @@ css.configure("Block.TLabel", font=("Helvetica", 30, "bold"))
 #Globals
 speed = 0.05
 scoreVar = IntVar(value=0)
+highVar = IntVar(value=0)
 colors = [None, "#eee4da", "#ebd8b6", "#f2b177", "#f69462", "#f78064", "#f76543", "#f1d26d", "#f2d366", "#edc651", "#eec744", "#ecc230", "#fe3d3e"]
 
 #Functions
@@ -40,6 +42,8 @@ def restart():
         if cell: cell.destroy()
     startButton["state"] = "enabled"
     restartButton["state"] = "disabled"
+    highVar.set(max(highVar.get(), scoreVar.get()))
+    scoreVar.set(0)
 def increaseScore(increament):
     scoreVar.set(scoreVar.get()+increament)
 
@@ -47,6 +51,9 @@ def increaseScore(increament):
 header = Frame(root, width=500, height=50, style="Head.TFrame")
 header.pack_propagate(False)
 header.pack(padx=12.5, pady=12.5)
+
+highLabel = Label(header, textvariable=highVar, style="High.TLabel")
+highLabel.pack(side="left", expand=True)
 
 scoreLabel = Label(header, textvariable=scoreVar, style="Score.TLabel")
 scoreLabel.pack(side="left", expand=True)
@@ -200,6 +207,7 @@ class Block:
                 cell.merge("Down", True)
                 movement = True
 
+#Key Events
 def keyPress(key):
     global movement
     movement = False
@@ -247,4 +255,5 @@ root.bind("<Left>", lambda _: keyPress("Left"))
 root.bind("<Down>", lambda _: keyPress("Down"))
 root.bind("<Up>", lambda _: keyPress("Up"))
 
+#Mainloop
 mainloop()
