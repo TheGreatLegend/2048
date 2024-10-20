@@ -6,7 +6,7 @@ from random import randint
 #Window Setup
 root = Tk()
 root.geometry("550x600+50+50")
-root.title("2048")
+root.title("the2048game")
 root.config(bg="#faf8f0")
 root.resizable(False, False)
 
@@ -18,13 +18,13 @@ css.configure("Score.TLabel", foreground="#9c8b7c", font=("Consolas", 18, "bold"
 css.configure("High.TLabel", foreground="#ffd700", font=("Consolas", 18, "bold"), background="#faf8f0")
 css.configure("HeadButton.TButton", foreground="#9c8b7c", font=("Consolas", 14, "bold"), background="#faf8f0", width=2, bordercolor="#9c8b7c")
 css.configure("Empty.TLabel", background="#bdac97")
-css.configure("Block.TLabel", font=("Helvetica", 30, "bold"))
-
+css.configure("Block.TLabel", font=("Helvetica", 28, "bold"))
+8
 #Globals
 speed = 0.05
 scoreVar = IntVar(value=0)
 highVar = IntVar(value=0)
-colors = [None, "#eee4da", "#ebd8b6", "#f2b177", "#f69462", "#f78064", "#f76543", "#f1d26d", "#f2d366", "#edc651", "#eec744", "#ecc230", "#fe3d3e"]
+colors = [None, "#eee4da", "#ebd8b6", "#f2b177", "#f69462", "#f78064", "#f76543", "#f1d26d", "#f2d366", "#edc651", "#eec744", "#ecc230", "#fe3d3e", "#000000"]
 
 #Functions
 def possible(*args):
@@ -92,7 +92,7 @@ class Block:
         self.y = ((self.pos//4)*0.25)+0.125
         self.power = possible(1, 6, 2, 1)
         self.var = IntVar(value=2**self.power)
-        self.block = Label(game, textvariable=self.var, background=colors[self.power], foreground="#ffffff" if self.power > 2 else "#756452", style="Block.TLabel", justify="center", anchor="center")
+        self.block = Label(game, textvariable=self.var, background=colors[self.power] if self.power <= 11 else colors[-1], foreground="#ffffff" if self.power > 2 else "#756452", style="Block.TLabel", justify="center", anchor="center")
 
     def place(self) -> None:
         self.block.place(relx=self.x, rely=self.y, relwidth=0.216, relheight=0.216, anchor="center")
